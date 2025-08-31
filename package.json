@@ -1,0 +1,27 @@
+{
+  "name": "resqlink-backend",
+  "version": "1.0.0",
+  "description": "ResQLink-Backend – Node.js &amp; MongoDB API for managing missing and unidentified persons in disaster situations, with endpoints for reporting, tracking, and AI-assisted matching.",
+  "main": "index.js",
+  "types": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdrayyansarfaraz7/ResQLink-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdrayyansarfaraz7/ResQLink-backend/issues"
+  },
+  "homepage": "https://github.com/mdrayyansarfaraz7/ResQLink-backend#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0",
+    "nodemon": "^3.1.10"
+  }
+}
