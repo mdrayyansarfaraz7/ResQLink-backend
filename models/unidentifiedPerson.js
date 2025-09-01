@@ -11,7 +11,7 @@ const unidentifiedPersonSchema = new mongoose.Schema({
   },
   condition: {
     type: String,
-    enum: ["alive_injured", "alive_unconscious", "deceased", "other"],
+    enum: ["alive_injured", "alive_unconscious", "other"],
     required: true,
   },
   estimatedAge: {

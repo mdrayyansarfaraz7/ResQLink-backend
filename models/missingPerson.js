@@ -39,7 +39,6 @@ const missingPersonSchema = new mongoose.Schema({
       "natural_disaster",
       "accident",
       "conflict/violence",
-      "medical_emergency",
       "lost_while_evacuating",
       "other",
     ],
@@ -48,11 +47,6 @@ const missingPersonSchema = new mongoose.Schema({
   photo: {
     type: String, 
     required: true,
-  },
-  identifiers: {
-    nationalId: { type: String }, 
-    passportNumber: { type: String },
-    otherIds: [{ type: String }],
   },
   contactInfo: {
     name: { type: String, required: true },
