@@ -138,3 +138,5 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# Google Cloud credentials (DO NOT COMMIT)
+config/gcp-service-account.json

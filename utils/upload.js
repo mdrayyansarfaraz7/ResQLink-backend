@@ -11,6 +11,8 @@ const storage = new CloudinaryStorage({
   },
 });
 
+console.log("Running utility to upload files to Cloudinary...");
+
 const upload = multer({ storage });
 
 export default upload;

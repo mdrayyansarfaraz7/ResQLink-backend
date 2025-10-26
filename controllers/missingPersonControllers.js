@@ -61,7 +61,7 @@ export const createMissingPersonReport = async (req, res) => {
 
     // Add photo path
     data.photo = req.file.path;
-
+   
     // Save report
     const newReport = new MissingPerson(data);
     await newReport.save();

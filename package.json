@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/mdrayyansarfaraz7/ResQLink-backend#readme",
   "dependencies": {
+    "@google-cloud/storage": "^7.17.2",
+    "axios": "^1.12.2",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
