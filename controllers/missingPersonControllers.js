@@ -103,3 +103,81 @@ export const createMissingPersonReport = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const findPotentialUnidentifiedMatches = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(`🔍 Finding unidentified person matches for MissingPerson ID: ${id}`);
+
+    // --------------------------------------------
+    // 1️⃣ Fetch the MissingPerson record by ID
+    // --------------------------------------------
+    const data = await MissingPerson.findById(id).lean();
+    if (!data) {
+      console.warn(`❌ No missing person found for ID: ${id}`);
+      return res.status(404).json({ message: "Missing person not found" });
+    }
+    console.log("✅ Missing person found:", data.fullName || data._id);
+
+    // --------------------------------------------
+    // 2️⃣ Extract time and location for query
+    // --------------------------------------------
+    const lastSeenDate = new Date(data.lastSeenDate);
+    if (isNaN(lastSeenDate)) {
+      console.error("❌ Invalid lastSeenDate format in record:", data.lastSeenDate);
+      return res.status(400).json({ message: "Invalid lastSeenDate format" });
+    }
+
+    const month = lastSeenDate.getMonth() + 1; // months are 0-indexed
+    const year = lastSeenDate.getFullYear();
+    const location = data.lastSeenLocation;
+
+    console.log(`📅 Filtering unidentified persons near "${location}" in ${month}/${year}`);
+
+    // --------------------------------------------
+    // 3️⃣ Find UnidentifiedPerson reports
+    // --------------------------------------------
+    const potentialMatches = await UnidentifiedPerson.find({
+      foundAtLocation: { $regex: location, $options: "i" },
+      foundDate: {
+        $gte: new Date(year, month - 1, 1),
+        $lte: new Date(year, month, 0, 23, 59, 59),
+      },
+    }).lean();
+
+    console.log(`✅ Found ${potentialMatches.length} potential unidentified reports`);
+
+    // --------------------------------------------
+    // 4️⃣ Send to AI API for similarity analysis
+    // --------------------------------------------
+    let aiMatches = [];
+    try {
+      console.log("🤖 Sending data to AI find_matches API...");
+      const aiResponse = await axios.post(
+        "https://resqlink-ai-api-159683191915.asia-south2.run.app/find_matches",
+        {
+          searcher_profile: data, // The missing person record
+          candidate_profiles: potentialMatches, // The possible matches
+        }
+      );
+      aiMatches = aiResponse.data;
+      console.log("✅ AI find_matches response received:", aiMatches);
+    } catch (apiError) {
+      console.error("❌ Error calling AI find_matches API:", apiError.response?.data || apiError.message);
+    }
+
+    // --------------------------------------------
+    // 5️⃣ Respond with data
+    // --------------------------------------------
+    res.status(200).json({
+      message: "Potential matches found successfully",
+      missingPerson: data,
+      potentialMatchesCount: potentialMatches.length,
+      aiMatches,
+    });
+  } catch (error) {
+    console.error("💥 Server error in findPotentialUnidentifiedMatches:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
